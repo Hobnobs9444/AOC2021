@@ -26,7 +26,7 @@ def yy(line_no):
     return vents[line_no,:,1]
 
 # check orientation of vent line
-def orientation(line_no):
+def find_axis(line_no):
     if np.all(vents[line_no,0,0] == vents[line_no,1,0]): # check if x coordinates are equal
         return "X"
     elif np.all(vents[line_no,0,1] == vents[line_no,1,1]): # check if y coordinates are equal
@@ -63,7 +63,7 @@ def ascending_or_descending(line_no):
         return "descending"
 
 # mark vent lines on map
-def if_Y(line_no):
+def mark_Y(line_no):
     # if orientation is Y, add 1 to (x1 -> x2, y)
     x_min = xx(line_no).min()
     x_max = xx(line_no).max()+1
@@ -71,7 +71,7 @@ def if_Y(line_no):
     for x in range(x_min, x_max):
         map[x,y] = map[x,y]+1
 
-def if_X(line_no):
+def mark_X(line_no):
     # if orientation is X, add 1 to (x, y1 -> y2)
     y_min = yy(line_no).min()
     y_max = yy(line_no).max()+1
@@ -79,7 +79,7 @@ def if_X(line_no):
     for y in range(y_min, y_max):
         map[x,y] = map[x,y]+1
 
-def if_ascending(line_no):
+def mark_ascending_diagonal(line_no):
     # +1 to each point from xy1 to xy2 on map in ascending diagonal
     x = find_xy_of_min_x(line_no)[0]
     y = find_xy_of_min_x(line_no)[1]
@@ -89,7 +89,7 @@ def if_ascending(line_no):
         x = x+1
         y = y+1
 
-def if_descending(line_no):
+def mark_descending_diagonal(line_no):
     # +1 to each point from xy1 to xy2 in descending diagnoal
     x = find_xy_of_min_x(line_no)[0]
     y = find_xy_of_min_x(line_no)[1]
@@ -114,18 +114,17 @@ def main():
 
     # Mark locations of vent lines on map
     for line_no in range(len(vents)):
-        axis = orientation(line_no)
+        axis = find_axis(line_no)
         if axis == 'Y':
-            if_Y(line_no)
+            mark_Y(line_no)
         elif axis == 'X':
-            if_X(line_no)
+            mark_X(line_no)
         elif axis == 'Diagonal':
-            pass
             direction = ascending_or_descending(line_no)
             if direction == 'ascending':
-                if_ascending(line_no)
+                mark_ascending_diagonal(line_no)
             elif direction == 'descending':
-                if_descending(line_no)
+                mark_descending_diagonal(line_no)
 
     # Count values >= 2 on map
     print(np.count_nonzero(map>=2))
