@@ -29,7 +29,7 @@ def test_range(locations):
 
 
 def test_range_tenary(locations):
-    # Tenary search algorithm to identify minimum fuel cost - used for example 2
+    # Tenary search algorithm to identify minimum fuel cost - used for part 2
     left = min(locations)
     right = max(locations)
 
